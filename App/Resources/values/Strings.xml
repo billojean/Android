@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Hello">Hello World, Click Me!</string>
+    <string name="ApplicationName">App</string>
+  <string name="openDrawer">My Info</string>
+  <string name="closeDrawer">Cooperarion Teams App</string>
+  <string name="google_maps_key">AIzaSyAsVs9C6k0sbI1uibL2hCbWu7hNMawJyJs</string>
+<string name="play_services_error_fmt">Google Play Services Error: {0}</string>
+</resources>
