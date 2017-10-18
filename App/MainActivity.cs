@@ -15,22 +15,31 @@ using Android.Gms.Plus;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using Xamarin.Auth;
+//using Xamarin.Auth;
 using System.Threading.Tasks;
+using Android.Support.V7.App;
+using Android.Gms.Auth.Api.SignIn;
+using Android.Gms.Auth.Api;
+using Android.Gms;
+
 
 namespace App
 {
-    [Activity(Icon = "@drawable/people_icon", MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
-    public class MainActivity : Activity
-
+    [Activity(Theme = "@style/MyTheme", Icon = "@drawable/people_icon", MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Register("com.coteams.MainActivity")]
+    public class MainActivity : AppCompatActivity, GoogleApiClient.IOnConnectionFailedListener
     {
 
-        
+
+        const string TAG = "MainActivity";
+
+        const int RC_SIGN_IN = 9001;
+
         private ProgressBar bar;
         private Button mbtnSignIn;
-        SignInButton button1;
-        GoogleInfo googleInfo;
         const string googleUserInfoAccessUrl = "https://www.googleapis.com/oauth2/v1/userinfo?access_token={0}";
+   
+        public static GoogleApiClient mGoogleApiClient;
         private string gmail;
 
         protected override void OnCreate(Bundle bundle)
@@ -42,10 +51,21 @@ namespace App
 
             mbtnSignIn = FindViewById<Button>(Resource.Id.btnSignIn);
             bar = FindViewById<ProgressBar>(Resource.Id.loadingPanel);
-            button1 = FindViewById<SignInButton>(Resource.Id.btnSignIn2);
-            FindViewById<SignInButton>(Resource.Id.btnSignIn2).SetSize(SignInButton.SizeWide);
 
+            var signInButton = FindViewById<SignInButton>(Resource.Id.btnSignIn2);
+            signInButton.SetSize(SignInButton.SizeStandard);
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
+                    .RequestEmail()
+                    .Build();
+            // [END configure_signin]
 
+            // [START build_client]
+            // Build a GoogleApiClient with access to the Google Sign-In API and the
+            // options specified by gso.
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                             .EnableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                             .AddApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                             .Build();
             mbtnSignIn.Click += (object sender, EventArgs args) =>
             {
 
@@ -56,113 +76,127 @@ namespace App
             };
 
 
-            button1.Click += LoginByGoogle;
+            signInButton.Click += LoginByGoogle;
 
         }
-        private void LoginByGoogle(object sender, EventArgs e)
+
+        protected async override void OnStart()
         {
-            bool allowCancel = true;
-            var auth = new OAuth2Authenticator(clientId: "767906086938-pp0omkhn89q85dsm34lgdvr8mutk65e3.apps.googleusercontent.com",
-             scope: "https://www.googleapis.com/auth/userinfo.email",
-             authorizeUrl: new Uri("https://accounts.google.com/o/oauth2/auth"),
-             redirectUrl: new Uri("https://www.googleapis.com/plus/v1/people/me"),
-             getUsernameAsync: null);
-             auth.AllowCancel = allowCancel;
-           
+            base.OnStart();
 
-            auth.Completed += async (sender1, e1) =>
+            var opr = Auth.GoogleSignInApi.SilentSignIn(mGoogleApiClient);
+            if (opr.IsDone)
             {
-                if (!e1.IsAuthenticated)
-                {
-                    return;
-                }
-                string access_token;
-                e1.Account.Properties.TryGetValue("access_token", out access_token);
+                // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+                // and the GoogleSignInResult will be available instantly.
+                Log.Debug(TAG, "Got cached sign-in");
+                var result = opr.Get() as GoogleSignInResult;
+                await HandleSignInResult(result);
+            }
+            else
+            {
+                // If the user has not previously signed in on this device or the sign-in has expired,
+                // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+                // single sign-on will occur in this branch.
+                
+                opr.SetResultCallback(new SignInResultCallback { Activity = this });
+            }
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
          
-                if (await GetProfileInfoFromGoogle(access_token))
+        }
+
+        protected async override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            Log.Debug(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
+
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+            if (requestCode == RC_SIGN_IN)
+            {
+                var result = Auth.GoogleSignInApi.GetSignInResultFromIntent(data);
+                await HandleSignInResult(result);
+            }
+        }
+
+        public async Task HandleSignInResult(GoogleSignInResult result)
+        {
+            Log.Debug(TAG, "handleSignInResult:" + result.IsSuccess);
+            if (result.IsSuccess)
+            {
+                bar.Visibility = ViewStates.Visible;
+                // Signed in successfully, show authenticated UI.
+                var acct = result.SignInAccount;
+                gmail = acct.Email;
+
+                try
                 {
-                    try
+                    ClientRequests inst = new ClientRequests();
+                    var response = await inst.GetUser(gmail);
+                    if (response.IsSuccessStatusCode)
+
                     {
-                        ClientRequests inst = new ClientRequests();
-                        var response = await inst.GetUser(gmail);
-                        if (response.IsSuccessStatusCode)
 
-                        {
+                        string responseBody = await response.Content.ReadAsStringAsync();
 
-                            string responseBody = await response.Content.ReadAsStringAsync();
-
-                            var jsn = JsonConvert.DeserializeObject<users>(responseBody);
+                        var jsn = JsonConvert.DeserializeObject<users>(responseBody);
 
 
-                            var MenuActivity = new Intent(this, typeof(MenuActivity));
-                            MenuActivity.PutExtra("MyData", jsn.UserName);
-                            MenuActivity.PutExtra("MyData2", true);
-                            MenuActivity.PutExtra("MyData3", jsn.FirstName + " " + jsn.LastName);
-                            StartActivity(MenuActivity);
-                            Toast.MakeText(this, "Logged in", ToastLength.Short).Show();
-                        }
-                        else
-                        {
-                            
-                            Toast.MakeText(this, "Wrong email", ToastLength.Short).Show();
-                            bar.Visibility = ViewStates.Invisible;
-
-                        }
-
+                        var MenuActivity = new Intent(this, typeof(MenuActivity));
+                        MenuActivity.PutExtra("MyData", jsn.UserName);
+                        MenuActivity.PutExtra("MyData2", true);
+                        MenuActivity.PutExtra("MyData3", jsn.FirstName + " " + jsn.LastName);
+                        StartActivity(MenuActivity);
+                        Toast.MakeText(this, "Logged in", ToastLength.Short).Show();
                     }
-                    catch (Exception ex)
+                    else
                     {
+
+                        Toast.MakeText(this, "Wrong email", ToastLength.Short).Show();
                         bar.Visibility = ViewStates.Invisible;
-                        Console.WriteLine(ex.ToString());
-                        Toast.MakeText(this, "Couldn't Establish Connection to Server", ToastLength.Short).Show();
-                    }
-                }
-            };
-            var intent = auth.GetUI(this);
-            StartActivity(intent);
-        }
-        async Task<bool> GetProfileInfoFromGoogle(string access_token)
-        {
-          
-            bar.Visibility = ViewStates.Visible;
-            bool isValid = false;
-         
-            string userInfo = await getInfo(string.Format(googleUserInfoAccessUrl, access_token));
-            if (userInfo != "Exception")
-            {
-         
-                googleInfo = JsonConvert.DeserializeObject<GoogleInfo>(userInfo);
-                isValid = true;
-                gmail = googleInfo.email;
 
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    bar.Visibility = ViewStates.Invisible;
+                    Console.WriteLine(ex.ToString());
+                    Toast.MakeText(this, "Couldn't Establish Connection to Server", ToastLength.Short).Show();
+                }
             }
             else
             {
                 bar.Visibility = ViewStates.Invisible;
-   
-                isValid = false;
-                Toast.MakeText(this, "Connection failed! Please try again", ToastLength.Short).Show();
+                //Toast.MakeText(this, "Couldn't Establish Connection to Server", ToastLength.Short).Show();
+                // Signed out, show unauthenticated UI.
+
             }
-
-            return isValid;
         }
-
-        async Task<string> getInfo(string strUri)
+        private void LoginByGoogle(object sender, EventArgs e)
         {
-            var client = new HttpClient();
-            string strResultData;
-            try
-            {
-                 strResultData = await client.GetStringAsync(new Uri(strUri));
-            }
-            catch (Exception)
-            {
-                strResultData = "Exception";
+           
+                var signInIntent = Auth.GoogleSignInApi.GetSignInIntent(mGoogleApiClient);
+                StartActivityForResult(signInIntent, RC_SIGN_IN);
+            
 
-            }
+                }
 
-            return strResultData;
+       
+
+
+        public void OnConnectionFailed(ConnectionResult result)
+        {
+            // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+            // be available.
+            Log.Debug(TAG, "onConnectionFailed:" + result);
         }
+
+
+
 
         public override void OnBackPressed()
         {
@@ -170,10 +204,14 @@ namespace App
             intent.AddCategory(Intent.CategoryHome);
             StartActivity(intent);
         }
+    }
+   
+
+
+    
 
 
     }
-}
 
 
 

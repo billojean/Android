@@ -14,6 +14,6 @@ namespace App
 {
     public static class constants
     {
-        public const string Baseurl = "http://192.168.1.66:8080/"; 
+        public const string Baseurl = "http://192.168.1.3:80/"; 
     }
 }

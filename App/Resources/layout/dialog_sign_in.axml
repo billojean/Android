@@ -6,7 +6,8 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    android:background="#1f2021">
     <TextView
         android:text="LOGIN FORM"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -15,28 +16,39 @@
         android:id="@+id/txt"
         android:gravity="center"
         android:textStyle="bold"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:textColor="@android:color/background_light"/>
     <EditText
         android:id="@+id/username"
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="50dp"
+        android:layout_marginTop="15dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="#161616"
+        android:textColor="@android:color/background_light"
         android:hint="username" />
     <EditText
         android:id="@+id/password"
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:fontFamily="sans-serif"
-        android:paddingTop="50dp"
+        android:background="#161616"
+        android:textColor="@android:color/background_light"
         android:hint="password" />
     <Button
         android:text="Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button1"
-        android:fontFamily="sans-serif" />
+        android:fontFamily="sans-serif"
+        android:background="@drawable/button5"
+        android:textColor="@android:color/background_light"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

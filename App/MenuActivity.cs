@@ -26,13 +26,14 @@ using Android.Support.V4.Widget;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Android.Support.V7.Widget;
+using Android.Gms.Auth.Api;
 
 namespace App
 {
     [Activity(Theme = "@style/MyTheme", Label = "App", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity
     {
-        
+     
         private string user;
         private bool Wasloggedin = false;
         private ToggleButton butt9;
@@ -46,14 +47,15 @@ namespace App
         private string[] mLeftDataSet;
         private TextView itemsText;
         private Toolbar toolbar;
+        private GoogleApiClient mGoogleApiClient;
 
-        
+        //private GoogleApiClient mGoogleApiClient;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
            
             base.OnCreate(savedInstanceState);
-
+            
             // Create your application here
             SetContentView(Resource.Layout.menu2);
             user = Intent.GetStringExtra("MyData") ?? "";
@@ -73,7 +75,9 @@ namespace App
             mDrawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawerlayout);
             mLeftDrawer = FindViewById<ListView>(Resource.Id.left_drawer);
             toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
-
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .AddApi(Auth.GOOGLE_SIGN_IN_API)
+                    .Build();
             Database db = new Database();
             var result = db.createDatabase();
 
@@ -133,7 +137,11 @@ namespace App
             };
 
         }
-
+        protected override void OnStart()
+        {
+            base.OnStart();
+            mGoogleApiClient.Connect();
+        }
         protected override void OnResume()
         {
             base.OnResume();
@@ -366,9 +374,10 @@ namespace App
         {
             new Android.App.AlertDialog.Builder(this)
             .SetPositiveButton("Yes",  (sender1, args) =>
-            {       
+            {
+                Auth.GoogleSignInApi.SignOut(mGoogleApiClient).SetResultCallback(new SignOutResultCallback { Activity = this });
+                //Auth.GoogleSignInApi.RevokeAccess(MainActivity.mGoogleApiClient);
                 var LogOut = new Intent(this, typeof(MainActivity));
-
                 StartActivity(LogOut);
                 Finish();
                 Toast.MakeText(this, "Logged Out!", ToastLength.Short).Show();
@@ -385,6 +394,7 @@ namespace App
 
         }
 
+   
         protected override void OnDestroy()
         {
             try
