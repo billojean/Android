@@ -115,7 +115,6 @@
   <ItemGroup>
     <Compile Include="App1.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="GoogleInfo.cs" />
     <Compile Include="SignInResultCallback.cs" />
     <Compile Include="SignOutResultCallback.cs" />
     <Compile Include="VehicleFragment.cs" />
