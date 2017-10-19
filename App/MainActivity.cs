@@ -15,9 +15,10 @@ using Android.Gms.Plus;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
-//using Xamarin.Auth;
+using Android.Support.V4.Widget;
 using System.Threading.Tasks;
 using Android.Support.V7.App;
+//using Toolbar = Android.Support.V7.Widget.Toolbar;
 using Android.Gms.Auth.Api.SignIn;
 using Android.Gms.Auth.Api;
 using Android.Gms;
@@ -37,10 +38,10 @@ namespace App
 
         private ProgressBar bar;
         private Button mbtnSignIn;
-        const string googleUserInfoAccessUrl = "https://www.googleapis.com/oauth2/v1/userinfo?access_token={0}";
    
         public static GoogleApiClient mGoogleApiClient;
         private string gmail;
+        private Toolbar toolbar;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -48,7 +49,10 @@ namespace App
             base.OnCreate(bundle);
 
             SetContentView(Resource.Layout.Main);
-
+            /*toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+            SetSupportActionBar(toolbar);
+            SupportActionBar.SetLogo(Resource.Drawable.people_icon);
+            SupportActionBar.Title = "Collaboration Teams";*/
             mbtnSignIn = FindViewById<Button>(Resource.Id.btnSignIn);
             bar = FindViewById<ProgressBar>(Resource.Id.loadingPanel);
 
