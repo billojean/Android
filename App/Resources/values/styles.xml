@@ -8,7 +8,6 @@
     <item name="windowActionBar">false</item>
     <item name="colorPrimary">#3498DB</item>
     <item name="android:windowBackground">@color/my_black</item>
-   <!-- <item name="android:windowAnimationStyle">@null</item>-->
   </style>
 
 </resources>
