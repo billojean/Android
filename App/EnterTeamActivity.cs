@@ -1,23 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using System.Net.Http;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Collections.Specialized;
 using Android.Content.PM;
 using Android.Support.V7.App;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using System.Net.Http.Headers;
-using Android.Support.V7.Widget;
 
 namespace App
 {
@@ -27,7 +19,7 @@ namespace App
       
         
         private ListView mListView;
-        private BaseAdapter<team> mteam;
+        private BaseAdapter<Team> mteam;
         private string user;
         private EditText pin;
         private ProgressBar bar;
@@ -68,10 +60,10 @@ namespace App
                     string responseBody = await response.Content.ReadAsStringAsync();
 
           
-                    List<team> jsn = new List<team>();
+                    List<Team> jsn = new List<Team>();
 
           
-                        jsn = JsonConvert.DeserializeObject<List<team>>(responseBody);
+                        jsn = JsonConvert.DeserializeObject<List<Team>>(responseBody);
 
                         mteam = new TeamAdapter(this, jsn);
                         mListView.Adapter = mteam;

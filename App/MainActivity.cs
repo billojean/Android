@@ -1,28 +1,19 @@
-﻿
-using System;
+﻿using System;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-using System.Net;
 using Android.Content.PM;
 using Android.Gms.Common.Apis;
 using Android.Gms.Common;
 using Android.Util;
-using Android.Gms.Plus;
-using System.Net.Http;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using Android.Support.V4.Widget;
 using System.Threading.Tasks;
 using Android.Support.V7.App;
-//using Toolbar = Android.Support.V7.Widget.Toolbar;
 using Android.Gms.Auth.Api.SignIn;
 using Android.Gms.Auth.Api;
-using Android.Gms;
-
 
 namespace App
 {
@@ -41,7 +32,6 @@ namespace App
    
         public static GoogleApiClient mGoogleApiClient;
         private string gmail;
-        private Toolbar toolbar;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -49,15 +39,13 @@ namespace App
             base.OnCreate(bundle);
 
             SetContentView(Resource.Layout.Main);
-            /*toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
-            SetSupportActionBar(toolbar);
-            SupportActionBar.SetLogo(Resource.Drawable.people_icon);
-            SupportActionBar.Title = "Collaboration Teams";*/
             mbtnSignIn = FindViewById<Button>(Resource.Id.btnSignIn);
             bar = FindViewById<ProgressBar>(Resource.Id.loadingPanel);
 
             var signInButton = FindViewById<SignInButton>(Resource.Id.btnSignIn2);
             signInButton.SetSize(SignInButton.SizeStandard);
+            var db = new Database();
+            var rslt = db.CreateDatabase();
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
                     .RequestEmail()
                     .Build();
@@ -80,14 +68,29 @@ namespace App
             };
 
 
+            IsLoggedInByUser();
             signInButton.Click += LoginByGoogle;
 
+        }
+
+        private void IsLoggedInByUser()
+        {
+            var db = new Database();
+            var user = db.GetLoggedInUser();
+
+            if (user != null)
+            {
+                bar.Visibility = ViewStates.Visible;
+                var MenuActivity = new Intent(this, typeof(MenuActivity));
+                StartActivity(MenuActivity);
+                Toast.MakeText(this, "Logged in", ToastLength.Short).Show();
+            }
         }
 
         protected async override void OnStart()
         {
             base.OnStart();
-
+            
             var opr = Auth.GoogleSignInApi.SilentSignIn(mGoogleApiClient);
             if (opr.IsDone)
             {
@@ -109,8 +112,7 @@ namespace App
 
         protected override void OnResume()
         {
-            base.OnResume();
-         
+            base.OnResume();            
         }
 
         protected async override void OnActivityResult(int requestCode, Result resultCode, Intent data)
@@ -124,11 +126,14 @@ namespace App
                 var result = Auth.GoogleSignInApi.GetSignInResultFromIntent(data);
                 await HandleSignInResult(result);
             }
+           
         }
 
         public async Task HandleSignInResult(GoogleSignInResult result)
         {
+            var db = new Database();
             Log.Debug(TAG, "handleSignInResult:" + result.IsSuccess);
+
             if (result.IsSuccess)
             {
                 bar.Visibility = ViewStates.Visible;
@@ -143,18 +148,13 @@ namespace App
                     if (response.IsSuccessStatusCode)
 
                     {
-
                         string responseBody = await response.Content.ReadAsStringAsync();
-
-                        var jsn = JsonConvert.DeserializeObject<users>(responseBody);
-
-
+                        var jsn = JsonConvert.DeserializeObject<User>(responseBody);
+                        var reslt = db.InsertLoggedInUser(jsn); 
                         var MenuActivity = new Intent(this, typeof(MenuActivity));
-                        MenuActivity.PutExtra("MyData", jsn.UserName);
-                        MenuActivity.PutExtra("MyData2", true);
-                        MenuActivity.PutExtra("MyData3", jsn.FirstName + " " + jsn.LastName);
                         StartActivity(MenuActivity);
                         Toast.MakeText(this, "Logged in", ToastLength.Short).Show();
+                        Console.WriteLine($"{jsn.FirstName} {jsn.LastName}");
                     }
                     else
                     {

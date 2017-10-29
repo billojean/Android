@@ -1,25 +1,16 @@
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System.Net.Http;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Net;
-using System.Collections.Specialized;
 using Android.Content.PM;
-using System.Net.Http.Headers;
 using SQLite;
 using Android.Support.V7.App;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using Android.Support.V7.Widget;
 
 namespace App
 {
@@ -105,8 +96,8 @@ namespace App
         {
             try
             {
-                Database db = new Database();
-                var items = db.GetItems(user);
+                var db = new Database();
+                var items = db.GetItems(user);    
                 string json = JsonConvert.SerializeObject(items);
                 var data = JsonConvert.DeserializeObject<List<Items>>(json);
                 mitems = new ItemsAdapter(this, data);
@@ -131,7 +122,7 @@ namespace App
         {
             try
             {
-                Database db =new Database();
+                var db = new Database();
 
                 items = mitems[e.Position];
                 var kind = items.item_kind.Trim();
@@ -148,7 +139,7 @@ namespace App
                                     if (response.IsSuccessStatusCode)
                                         {
                                         
-                                        var result2 = db.deleteItems(id);
+                                        var result2 = db.DeleteItems(id);
 
                                             if (result2 == "Items deleted!")
 

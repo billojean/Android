@@ -1,10 +1,7 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
-
 using Android.Content;
 using Android.Util;
-
 using App.Services;
 
 /// <summary>

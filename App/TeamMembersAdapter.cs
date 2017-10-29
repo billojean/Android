@@ -1,28 +1,21 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Graphics;
 
 namespace App
 {
-    class TeamMembersAdapter : BaseAdapter<teamMembers>
+    class TeamMembersAdapter : BaseAdapter<TeamMembers>
     {
         private Activity context;
 
-        private List<teamMembers> mteammembers;
-        public TeamMembersAdapter(Activity context, List<teamMembers> members) : base()
+        private List<TeamMembers> mteammembers;
+        public TeamMembersAdapter(Activity context, List<TeamMembers> members) : base()
         {
             this.context = context;
 
-            mteammembers = members;
+            this.mteammembers = members;
 
         }
 
@@ -32,7 +25,7 @@ namespace App
             get { return mteammembers.Count; }
         }
 
-        public override teamMembers this[int position]
+        public override TeamMembers this[int position]
         {
             get
             {
@@ -57,6 +50,7 @@ namespace App
             byte[] Image = mteammembers[position].Pic;
             if (Image != null)
             {
+                
                 Bitmap bmp = BitmapFactory.DecodeByteArray(Image, 0, Image.Length);
                 view.FindViewById<ImageView>(Resource.Id.Image).SetImageBitmap(bmp);
             }

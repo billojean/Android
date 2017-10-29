@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System.Net.Http;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Collections.Specialized;
 using Android.Content.PM;
 using Android.Support.V7.App;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using System.Net.Http.Headers;
-using Android.Support.V7.Widget;
-
 namespace App
 {
    [Activity(Theme = "@style/MyTheme",Label = "App", ScreenOrientation = ScreenOrientation.Portrait)]
@@ -60,9 +50,9 @@ namespace App
 
                     string responseBody = await response.Content.ReadAsStringAsync();
                   
-                    List<teamMembers> jsn = new List<teamMembers>();
+                    List<TeamMembers> jsn = new List<TeamMembers>();
 
-                        jsn = JsonConvert.DeserializeObject<List<teamMembers>>(responseBody);
+                        jsn = JsonConvert.DeserializeObject<List<TeamMembers>>(responseBody);
 
                         mteammembers = new TeamMembersAdapter(this, jsn);
                         mListView.Adapter = mteammembers;

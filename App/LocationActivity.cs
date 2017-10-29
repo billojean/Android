@@ -1,23 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
 using Android.Locations;
 using Android.Util;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Android.Content.PM;
 
 namespace App
@@ -148,7 +140,7 @@ namespace App
 
                     {
                         string responseBody = await response.Content.ReadAsStringAsync();
-                        var jsn = JsonConvert.DeserializeObject<IEnumerable<locations>>(responseBody);
+                        var jsn = JsonConvert.DeserializeObject<IEnumerable<Locations>>(responseBody);
 
                         foreach (var key in jsn)
                         {

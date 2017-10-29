@@ -120,7 +120,6 @@
     <Compile Include="VehicleFragment.cs" />
     <Compile Include="ClientRequests.cs" />
     <Compile Include="InfoAdapter.cs" />
-    <Compile Include="constants.cs" />
     <Compile Include="CreateTeamActivity.cs" />
     <Compile Include="EnterTeamActivity.cs" />
     <Compile Include="ItemActivity.cs" />
@@ -177,7 +176,7 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\team_sign_in.axml">
-      <SubType>AndroidResource</SubType>
+      <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ItemDialog.axml">
       <SubType>AndroidResource</SubType>
@@ -204,14 +203,16 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\menu2.axml">
-      <SubType>AndroidResource</SubType>
+      <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\vehiclefragment.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\Main.axml" />
+    <AndroidResource Include="Resources\layout\Main.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

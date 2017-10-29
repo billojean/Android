@@ -1,21 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Net.Http;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System.IO;
-using System.Collections.Specialized;
 using Newtonsoft.Json;
-
-using System.Json;
-using System.Net.Http.Headers;
 
 
 namespace App
@@ -49,12 +39,13 @@ namespace App
         async void StartUserLogin(object sender, EventArgs e)
         {
             bar.Visibility = ViewStates.Visible;
+            var db = new Database();
 
-          
             try {
+
                 try
                 {
-                        var values = new Dictionary<string, string>
+                    var values = new Dictionary<string, string>
                  {
                     { "UserName", user.Text },
                     { "PassWord", pass.Text }
@@ -67,12 +58,16 @@ namespace App
                         {
                             string responseBody = await response.Content.ReadAsStringAsync();
 
-                            var jsn = JsonConvert.DeserializeObject<users>(responseBody);
+                            var jsn = JsonConvert.DeserializeObject<User>(responseBody);
+
+                            var result = db.InsertLoggedInUser(jsn);
+
+                    
 
                             var MenuActivity = new Intent(Activity, typeof(MenuActivity));
-                            MenuActivity.PutExtra("MyData", user.Text);
-                            MenuActivity.PutExtra("MyData2", true);
-                            MenuActivity.PutExtra("MyData3", jsn.FirstName + " " + jsn.LastName);
+                            //MenuActivity.PutExtra("MyData", jsn.UserName);
+                            //MenuActivity.PutExtra("MyData2", true);
+                            //MenuActivity.PutExtra("MyData3", jsn.FirstName + " " + jsn.LastName);
                             StartActivity(MenuActivity);
                             Toast.MakeText(Activity, "Logged in", ToastLength.Short).Show();
                         }

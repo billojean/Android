@@ -1,20 +1,14 @@
 using System;
-
 using Android.App;
 using Android.Util;
 using Android.Content;
 using Android.OS;
 using Android.Locations;
 using Android.Widget;
-using System.Net.Http;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Net;
 using SQLite;
 using Newtonsoft.Json.Linq;
-using System.Text;
 using Newtonsoft.Json;
-using System.Threading;
 
 namespace App.Services
 {
@@ -73,10 +67,11 @@ namespace App.Services
         {
             //we can set different location criteria based on requirements for our app -
             //for example, we might want to preserve power, or get extreme accuracy
-             var locationCriteria = new Criteria();
-
-            locationCriteria.Accuracy = Accuracy.Coarse;
-            locationCriteria.PowerRequirement = Power.Medium;
+            var locationCriteria = new Criteria
+            {
+                Accuracy = Accuracy.Coarse,
+                PowerRequirement = Power.Medium
+            };
 
             // get provider: GPS, Network, etc.
             var locationProvider = LocMgr.GetBestProvider(locationCriteria, true);
@@ -115,16 +110,17 @@ namespace App.Services
             this.LocationChanged(this, new LocationChangedEventArgs(location));
             if (ToggleIsChecked)
             {
-
-                
+               
                     try
-                    { 
-                        JObject data = new JObject();
-                        data["username"] = user;
-                        data["latitude"] = location.Latitude;
-                        data["longitude"] = location.Longitude;
+                    {
+                    JObject data = new JObject
+                    {
+                        ["username"] = user,
+                        ["latitude"] = location.Latitude,
+                        ["longitude"] = location.Longitude
+                    };
 
-                            string json = JsonConvert.SerializeObject(data);
+                    string json = JsonConvert.SerializeObject(data);
                            
                             var response = await inst.PostLocation(json);
 
@@ -151,9 +147,9 @@ namespace App.Services
                         {
                             title = "";
                         }
-                    Database db = new Database();
-                                   
-                        DateTime thisDay = DateTime.Now;
+                         var db = new Database();
+
+                         DateTime thisDay = DateTime.Now;
                         try
                         {
                             var locationList = new List<LocationLocal>
@@ -163,7 +159,7 @@ namespace App.Services
 
                             };
                         
-                        var result2 = db.insertUpdateLocation(locationList);
+                        var result2 = db.InsertUpdateLocation(locationList);
                       
                         }
                         catch (SQLiteException)

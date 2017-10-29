@@ -1,19 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Android.Support.V4.View;
-using Android.Support.V7.Widget;
 using Newtonsoft.Json;
-using SQLite;
 using System.Threading.Tasks;
 
 namespace App
@@ -125,7 +119,7 @@ namespace App
         {
             try
             {
-                Database db = new Database();
+                var db = new Database();
                 laptops = _adapter[e.Position];
                 var kind = "Laptop";
                 var id = laptops.Id.Trim();
@@ -173,8 +167,7 @@ namespace App
 
                                                 if (response.IsSuccessStatusCode)
                                                 {
-                                                    var result2 = db.insertUpdateItems(itemsList);                             
-
+                                                    var result2 = db.InsertUpdateItems(itemsList);
                                                     Toast.MakeText(Activity, "Successfully Taken.", ToastLength.Short).Show();
                                                     Activity.Finish();
                                                     

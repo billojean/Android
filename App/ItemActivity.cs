@@ -1,32 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System.Net.Http;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Collections.Specialized;
 using Android.Content.PM;
-using System.Net.Http.Headers;
 using SQLite;
 using Android.Support.V7.App;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using Android.Support.V7.Widget;
 
 namespace App
 {
     [Activity(Theme = "@style/MyTheme", Label = "App", ScreenOrientation = ScreenOrientation.Portrait)]
     public class ItemActivity : AppCompatActivity
     {
-
-
         private ListView mListView;
         private string user;
         private ItemsAdapter mitems;
@@ -56,9 +45,7 @@ namespace App
             user = Intent.GetStringExtra("MyData") ?? "";
 
             GetItemsFromDB();
-
-           
-
+          
     }
 
         private async void GetItemsFromDB()
@@ -103,8 +90,8 @@ namespace App
 
         private void StartEndWork(object sender, EventArgs e)
         {
-                    
-            Database db = new Database();
+
+            var db = new Database();
             ClientRequests inst = new ClientRequests();
 
             new Android.App.AlertDialog.Builder(this)
@@ -142,7 +129,7 @@ namespace App
                                       {
                                           Toast.MakeText(this, "Ended Work!", ToastLength.Short).Show();
                                       
-                                     string delete =  db.DeleteLocalLocations(user);
+                                     string delete = db.DeleteLocalLocations(user);
                                           Finish();
                                       }
                                       else { Toast.MakeText(this, "You are not in a Team!", ToastLength.Short).Show(); }
@@ -169,8 +156,8 @@ namespace App
         {
             try
             {
-                
-                Database db = new Database();
+
+                var db = new Database();
                 items = mitems[e.Position];
                 var kind = items.item_kind.Trim();
                 var id = items.item_id.Trim();
@@ -187,7 +174,7 @@ namespace App
                                         {
 
                                        
-                                        var result2 = db.deleteItems(id);
+                                        var result2 = db.DeleteItems(id);
 
                                             if (result2 == "Items deleted!")
 

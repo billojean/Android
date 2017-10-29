@@ -1,4 +1,3 @@
-using System;
 using SupportActionBarDrawerToggle = Android.Support.V7.App.ActionBarDrawerToggle;
 using Android.Support.V7.App;
 using Android.Support.V4.Widget;

@@ -1,31 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System.Net.Http;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using Android.Content.PM;
-using System.Net;
 using SQLite;
 using Android.Gms.Common.Apis;
-using Android.Gms.Common;
 using Android.Util;
-using Android.Gms.Plus;
-using Android.Locations;
 using Android.Support.V7.App;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
-using App.Services;
 using Android.Support.V4.Widget;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using Android.Support.V7.Widget;
 using Android.Gms.Auth.Api;
 
 namespace App
@@ -33,35 +21,31 @@ namespace App
     [Activity(Theme = "@style/MyTheme", Label = "App", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MenuActivity : AppCompatActivity
     {
-     
-        private string user;
-        private bool Wasloggedin = false;
+
         private ToggleButton butt9;
         const string TAG = "MenuActivity";
        
         private DrawerLayout mDrawerLayout;
         private ListView mLeftDrawer;
         private MyActionBarDrawerToggle mDrawerToggle;
-        private string name;
+        private User user;
+        private string fullname;
         private InfoAdapter listAdapter;
         private string[] mLeftDataSet;
         private TextView itemsText;
         private Toolbar toolbar;
         private GoogleApiClient mGoogleApiClient;
 
-        //private GoogleApiClient mGoogleApiClient;
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
            
             base.OnCreate(savedInstanceState);
-            
-            // Create your application here
+
             SetContentView(Resource.Layout.menu2);
-            user = Intent.GetStringExtra("MyData") ?? "";
-            user = user.Trim();
-            name = Intent.GetStringExtra("MyData3") ?? "";
-            Wasloggedin = Intent.GetBooleanExtra("MyData2", Wasloggedin);
+            var db = new Database();
+            user = db.GetLoggedInUser();
+            fullname = user.FirstName + " " + user.LastName;
+
             Button butt1 = FindViewById<Button>(Resource.Id.button1);
             Button butt2 = FindViewById<Button>(Resource.Id.button2);
             Button butt3 = FindViewById<Button>(Resource.Id.button3);
@@ -75,14 +59,12 @@ namespace App
             mDrawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawerlayout);
             mLeftDrawer = FindViewById<ListView>(Resource.Id.left_drawer);
             toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
+
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .AddApi(Auth.GOOGLE_SIGN_IN_API)
                     .Build();
-            Database db = new Database();
-            var result = db.createDatabase();
-
-            butt9.Checked = true;
-
+            
+           butt9.Checked = true;
 
             mDrawerToggle = new MyActionBarDrawerToggle(
                  this,
@@ -91,8 +73,6 @@ namespace App
                  Resource.String.closeDrawer
              );
             mDrawerLayout.AddDrawerListener(mDrawerToggle);
-
-
 
             SetSupportActionBar(toolbar);
             SupportActionBar.Title = "Cooperation Teams App";
@@ -109,11 +89,11 @@ namespace App
             butt7.Click += StartEndWork;
             butt8.Click += StartLogOut;
 
-            getLeftDrawerInfo();
+            
 
             mLeftDrawer.ItemClick += MListView_ItemClick;
 
-                App1.StartLocationService(user, true);
+                App1.StartLocationService(user.UserName, true);
 
 
             butt9.Click += (o, eg) =>
@@ -122,62 +102,60 @@ namespace App
                 {
               
                         App1.StopLocationService();
-                        App1.StartLocationService(user, true);
-                        Toast.MakeText(this, "You are now sending location!", ToastLength.Short).Show();
-                 
+                        App1.StartLocationService(user.UserName, true);
+                        Toast.MakeText(this, "You are now sending location!", ToastLength.Short).Show();                
                 }
                 else
                 {
                 
                         App1.StopLocationService();
                         Toast.MakeText(this, "Location service is stopped!", ToastLength.Short).Show();
-                        App1.StartLocationService(user, false);
-                   
+                        App1.StartLocationService(user.UserName, false);                   
                 }
             };
 
         }
+        
         protected override void OnStart()
         {
             base.OnStart();
             mGoogleApiClient.Connect();
         }
+
         protected override void OnResume()
         {
             base.OnResume();
 
             CountMyItems();
-
-
+            GetLeftDrawerInfo();
         }
 
         private  void CountMyItems()
         {
             try {
-                Database db = new Database();
-                var table = db.GetItems(user);
+                var db = new Database();
+                var table = db.GetItems(user.UserName);
                 string json = JsonConvert.SerializeObject(table);
                 var data = JsonConvert.DeserializeObject<List<Items>>(json);
 
                 if (data.Count > 0)
                 {
-                    itemsText.Visibility = ViewStates.Visible;
-                    itemsText.Text = "" + data.Count;
+                    itemsText.Visibility = ViewStates.Visible;                   
                 }
                 else
                 {
                     itemsText.Visibility = ViewStates.Invisible;
                 }
+                itemsText.Text = "" + data.Count;
             }
             catch(SQLiteException ex)
             { Console.WriteLine(ex.ToString()); }
         }
 
-        private async void getLeftDrawerInfo()
+        private async void GetLeftDrawerInfo()
         {
             Title = await GetUserTeamTitle();
-            mLeftDataSet = new string[] { name, "Current Team: " + Title, "My Items" };
-
+            mLeftDataSet = new string[] {fullname, "Current Team: " + Title, "My Items("+itemsText.Text+")" };
             listAdapter = new InfoAdapter(this, mLeftDataSet);
             mLeftDrawer.Adapter = listAdapter;
         }
@@ -187,7 +165,7 @@ namespace App
             try
             {
                  ClientRequests inst = new ClientRequests();
-                 var response = await inst.GetUserTeam(user);
+                 var response = await inst.GetUserTeam(user.UserName);
                     string responseString = await response.Content.ReadAsStringAsync();
                     var jsn = JsonConvert.DeserializeObject<dynamic>(responseString);
                     if (response.IsSuccessStatusCode)
@@ -217,16 +195,18 @@ namespace App
             if(e.Position == 2)
             { StartMyItems(null, null); }
         }
+
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            getLeftDrawerInfo();
+            GetLeftDrawerInfo();
             mDrawerToggle.OnOptionsItemSelected(item);
             return base.OnOptionsItemSelected(item);
         }
+
         private void StartMyItems(object sender, EventArgs e)
         {
             var MyItemsActivity = new Intent(this, typeof(MyItemsActivity));
-            MyItemsActivity.PutExtra("MyData", user);
+            MyItemsActivity.PutExtra("MyData", user.UserName);
             StartActivity(MyItemsActivity);
         }
 
@@ -235,7 +215,7 @@ namespace App
             
      
                 var LocationActivity = new Intent(this, typeof(LocationActivity));
-                LocationActivity.PutExtra("MyData", user);
+                LocationActivity.PutExtra("MyData", user.UserName);
                 StartActivity(LocationActivity);
             
         }
@@ -243,7 +223,7 @@ namespace App
         private void StartMyTeam(object sender, EventArgs e)
         {
             var MyTeamActivity = new Intent(this, typeof(MyTeamActivity));
-            MyTeamActivity.PutExtra("MyData", user);
+            MyTeamActivity.PutExtra("MyData", user.UserName);
             StartActivity(MyTeamActivity);
         }
 
@@ -251,12 +231,12 @@ namespace App
         {
 
             ClientRequests inst = new ClientRequests();
-         
-            Database db = new Database();
+
+            var db = new Database();
             try
             {
               
-                var response = await inst.HasItems(user);
+                var response = await inst.HasItems(user.UserName);
                     if (response.IsSuccessStatusCode)
                     {
                         new Android.App.AlertDialog.Builder(this)
@@ -264,7 +244,7 @@ namespace App
                             {
 
                                 var ItemActivity = new Intent(this, typeof(ItemActivity));
-                                ItemActivity.PutExtra("MyData", user);
+                                ItemActivity.PutExtra("MyData", user.UserName);
                                 StartActivity(ItemActivity);
 
                             })
@@ -282,8 +262,7 @@ namespace App
 
                                try
                                {
-                                                                     
-                                   var locations = db.GetLocalLocation(user);
+                                   var locations = db.GetLocalLocation(user.UserName);
 
                                    string json = JsonConvert.SerializeObject(locations);
                                   
@@ -307,7 +286,7 @@ namespace App
                            try
                            {
                                   
-                                   var response3 = await inst.DeleteUserFromTeam(user);
+                                   var response3 = await inst.DeleteUserFromTeam(user.UserName);
                                    if (response3.IsSuccessStatusCode)
                                    {
                                            
@@ -316,7 +295,7 @@ namespace App
                                    }
                                    else { Toast.MakeText(this, "You are not in a Team!", ToastLength.Short).Show(); }
                                   
-                                  string delete= db.DeleteLocalLocations(user); 
+                                  string delete= db.DeleteLocalLocations(user.UserName); 
                                    
                                }
                                catch (Exception ex)
@@ -350,33 +329,35 @@ namespace App
 
         }
 
-
         void StartCreateTeam(object sender, EventArgs e)
         {
             var CreateTeamActivity = new Intent(this, typeof(CreateTeamActivity));
-            CreateTeamActivity.PutExtra("MyData", user);
+            CreateTeamActivity.PutExtra("MyData", user.UserName);
             StartActivity(CreateTeamActivity);
         }
 
         void StartEnterTeam(object sender, EventArgs e)
         {
             var enterTeamActivity = new Intent(this, typeof(EnterTeamActivity));
-            enterTeamActivity.PutExtra("MyData", user);
+            enterTeamActivity.PutExtra("MyData", user.UserName);
             StartActivity(enterTeamActivity);
         }
+
         void StartTakeItem(object sender, EventArgs e)
         {
             var TakeItemActivity = new Intent(this, typeof(TakeItemActivity));
-            TakeItemActivity.PutExtra("MyData", user);
+            TakeItemActivity.PutExtra("MyData", user.UserName);
             StartActivity(TakeItemActivity);
         }
+
         void StartLogOut(object sender, EventArgs e)
         {
             new Android.App.AlertDialog.Builder(this)
             .SetPositiveButton("Yes",  (sender1, args) =>
             {
                 Auth.GoogleSignInApi.SignOut(mGoogleApiClient).SetResultCallback(new SignOutResultCallback { Activity = this });
-                //Auth.GoogleSignInApi.RevokeAccess(MainActivity.mGoogleApiClient);
+                var db = new Database();
+                string result = db.DeleteUser(user.UserName);
                 var LogOut = new Intent(this, typeof(MainActivity));
                 StartActivity(LogOut);
                 Finish();
@@ -393,7 +374,6 @@ namespace App
            .Show();
 
         }
-
    
         protected override void OnDestroy()
         {
@@ -413,10 +393,11 @@ namespace App
             base.OnDestroy();
 
         }
+
         public override void OnBackPressed()
 
         {
-            if (!Wasloggedin)
+            if (user==null)
             { base.OnBackPressed(); }
 
             else {

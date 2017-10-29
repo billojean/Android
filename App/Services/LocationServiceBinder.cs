@@ -1,4 +1,3 @@
-using System;
 using Android.OS;
 
 namespace App.Services

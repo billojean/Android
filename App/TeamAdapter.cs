@@ -1,23 +1,16 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
 namespace App
 {
-    class TeamAdapter : BaseAdapter<team>
+    class TeamAdapter : BaseAdapter<Team>
     {
         private Activity context;
    
-        private List<team> mteams;
-        public TeamAdapter(Activity context, List<team> team) : base() {
+        private List<Team> mteams;
+        public TeamAdapter(Activity context, List<Team> team) : base() {
             this.context = context;
             
             mteams = team;
@@ -30,7 +23,7 @@ namespace App
             get { return mteams.Count; }
         }
 
-        public override team this[int position]
+        public override Team this[int position]
         {
             get
             {

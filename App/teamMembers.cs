@@ -1,21 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 
 namespace App
 {
-    class teamMembers
+    class TeamMembers
     {
         public string FirstName { get; set; }
+
         public string LastName { get; set; }
+
         public string t_title { get; set; }
 
         public string t_member { get; set; }
@@ -29,6 +20,7 @@ namespace App
         public string MobilePhone { get; set; }
 
         public string Department { get; set; }
+
         public byte[] Pic { get; set; }
     }
 }
