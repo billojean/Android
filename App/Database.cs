@@ -46,7 +46,7 @@ namespace App
         {
             try
             {
-               // var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+               
                 if (db.InsertAll(data) != 0)
                     db.UpdateAll(data);
                 return "List of data inserted to localDB";
@@ -59,7 +59,7 @@ namespace App
 
         public TableQuery<Items> GetItems(string user)
         {
-               // var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+               
                 var items = db.Table<Items>().Where(v => v.item_owner.Equals(user));
                 return items;           
         }
@@ -68,7 +68,7 @@ namespace App
         {
             try
             {
-                //var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+                
                 if (db.Insert(user) != 0)
                     db.Update(user);
                 return "List of data inserted to localDB";
@@ -81,13 +81,13 @@ namespace App
         }
         public User GetLoggedInUser()      
         {
-           // var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+           
             return db.Table<User>().SingleOrDefault(); 
         }
 
         public TableQuery<LocationLocal>GetLocalLocation(string user)
         {
-           // var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+           
             var locations = db.Table<LocationLocal>().Where(v => v.username.Equals(user));
             return locations;
         }
@@ -97,7 +97,7 @@ namespace App
             try
             {
 
-                //var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+                
                 var delete = db.Query<LocationLocal>("DELETE FROM LocationLocal WHERE username=?", user);
 
                 return "Local locations deleted!";
@@ -113,7 +113,7 @@ namespace App
             try
             {
 
-              //  var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+              
                 var delete = db.Query<User>("DELETE FROM User WHERE username=?", user);
 
                 return "Local locations deleted!";
@@ -129,7 +129,7 @@ namespace App
         {
             try
             {
-               // var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+               
                 var count = db.ExecuteScalar<int>("SELECT Count(*) FROM LocationLocal");
 
 
@@ -145,7 +145,7 @@ namespace App
             try
             {
 
-               // var db = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+               
                 var delete = db.Query<Items>("DELETE FROM Items WHERE item_id=?", item_id);
 
                 return "Items deleted!";
