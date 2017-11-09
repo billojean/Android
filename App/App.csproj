@@ -118,7 +118,7 @@
     <Compile Include="InfoAdapter.cs" />
     <Compile Include="CreateTeamActivity.cs" />
     <Compile Include="EnterTeamActivity.cs" />
-    <Compile Include="ItemActivity.cs" />
+    <Compile Include="MyItemActivity.cs" />
     <Compile Include="Items.cs" />
     <Compile Include="ItemsAdapter.cs" />
     <Compile Include="Itemslocal.cs" />
@@ -132,7 +132,6 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="MenuActivity.cs" />
     <Compile Include="MyActionBarDrawerToggle.cs" />
-    <Compile Include="MyItemsActivity.cs" />
     <Compile Include="MyTeamActivity.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

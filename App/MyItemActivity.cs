@@ -14,7 +14,7 @@ using Toolbar = Android.Support.V7.Widget.Toolbar;
 namespace App
 {
     [Activity(Theme = "@style/MyTheme", Label = "App", ScreenOrientation = ScreenOrientation.Portrait)]
-    public class ItemActivity : AppCompatActivity
+    public class MyItemActivity : AppCompatActivity
     {
         private ListView mListView;
         private string user;
@@ -69,11 +69,29 @@ namespace App
             catch (Exception ex)
             {
                 bar.Visibility = ViewStates.Gone;
+                GetItemsFromLocalDB();
                 Console.WriteLine(ex.ToString());
-                Toast.MakeText(this, "Couldn't Establish Connection to Server", ToastLength.Short).Show();
             }
 
 
+        }
+
+        private void GetItemsFromLocalDB()
+        {
+            try
+            {
+                var db = new Database();
+                var items = db.GetItems(user);
+                string json = JsonConvert.SerializeObject(items);
+                var data = JsonConvert.DeserializeObject<List<Items>>(json);
+                mitems = new ItemsAdapter(this, data);
+                mListView.Adapter = mitems;
+                Toast.MakeText(this, "Couldn't Establish Connection to Server", ToastLength.Short).Show();
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -195,7 +213,7 @@ namespace App
                                 })
                                 .SetNegativeButton("No", (sender2, args) =>
                                 {
-                                    new Intent(this, typeof(ItemActivity));
+                                    new Intent(this, typeof(MyItemActivity));
 
                                 })
                 .SetMessage("Return Item: " + kind + " with Id: " + id + "?")

@@ -192,7 +192,7 @@ namespace App
 
         private void StartMyItems(object sender, EventArgs e)
         {
-            var MyItemsActivity = new Intent(this, typeof(MyItemsActivity));
+            var MyItemsActivity = new Intent(this, typeof(MyItemActivity));
             MyItemsActivity.PutExtra("MyData", user.UserName);
             StartActivity(MyItemsActivity);
         }
@@ -230,7 +230,7 @@ namespace App
                             .SetPositiveButton("Yes", (sender1, args) =>
                             {
 
-                                var ItemActivity = new Intent(this, typeof(ItemActivity));
+                                var ItemActivity = new Intent(this, typeof(MyItemActivity));
                                 ItemActivity.PutExtra("MyData", user.UserName);
                                 StartActivity(ItemActivity);
 
