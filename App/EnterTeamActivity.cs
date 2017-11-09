@@ -55,9 +55,9 @@ namespace App
 
                 ClientRequests inst = new ClientRequests();
 
-                var jsn = await inst.GetTeams();    
+                var teams = await inst.GetTeams();    
 
-                        mteam = new TeamAdapter(this, jsn);
+                        mteam = new TeamAdapter(this, teams);
                         mListView.Adapter = mteam;
 
                 mListView.Visibility = ViewStates.Visible;

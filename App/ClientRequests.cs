@@ -43,23 +43,32 @@ namespace App
             var jsn = JsonConvert.DeserializeObject<List<Team>>(responseBody);
             return jsn;
         }
-        public async Task<HttpResponseMessage> GetVehicles()
+        public async Task<List<Vehicles>> GetVehicles()
         {
 
             var response = await client.GetAsync("api/Vehicles/Getvehicles");
-            return response;
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var vehicles = JsonConvert.DeserializeObject<List<Vehicles>>(responseBody);
+            return vehicles;
         }
-        public async Task<HttpResponseMessage> GetLaptops()
+        public async Task<List<Laptops>> GetLaptops()
         {
 
             var response = await client.GetAsync("api/Laptops/Getlaptops");
-            return response;
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var laptops = JsonConvert.DeserializeObject<List<Laptops>>(responseBody);
+            return laptops;
         }
-        public async Task<HttpResponseMessage> GetSpareParts()
+        public async Task<List<SparePart>> GetSpareParts()
         {
 
             var response = await client.GetAsync("api/SpareParts/Getspareparts");
-            return response;
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var spareparts = JsonConvert.DeserializeObject<List<SparePart>>(responseBody);
+            return spareparts;
         }
 
         public async Task<HttpResponseMessage> PostUserInTeam(Dictionary<string, string> values)
@@ -86,11 +95,13 @@ namespace App
             return response;
         }
 
-        public async Task<HttpResponseMessage> GetItems(string user)
+        public async Task<List<Items>> GetItems(string user)
         {
 
             var response = await client.GetAsync("api/items/Getitems?user=" + (user));
-            return response;
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var jsn = JsonConvert.DeserializeObject<List<Items>>(responseBody);
+            return jsn;
         }
 
         public async Task<HttpResponseMessage> ReturnItem(string id)
@@ -100,11 +111,13 @@ namespace App
             return response;
         }
 
-        public async Task<HttpResponseMessage> GetUser(string email)
+        public async Task<User> GetUserByEmail(string email)    
         {
  
             var response = await client.GetAsync("api/user/Getuser?Email=" + (email));
-            return response;
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var jsn = JsonConvert.DeserializeObject<User>(responseBody);
+            return jsn;
         }
 
         public async Task<HttpResponseMessage> UserLogIn(Dictionary<string, string> values)
@@ -115,11 +128,13 @@ namespace App
             return response;
         }
 
-        public async Task<HttpResponseMessage> GetMembersLocation(string user)
+        public async Task<IEnumerable<Locations>> GetMembersLocation(string user)
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/locations/Getlocations?user=" + (user));
-            return response;
+            var response = await client.GetAsync("api/locations/Getlocations?user=" + (user));
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var jsn = JsonConvert.DeserializeObject<IEnumerable<Locations>>(responseBody);
+            return jsn;
         }
 
         public async Task<HttpResponseMessage>PostLocation(string json)
@@ -129,17 +144,33 @@ namespace App
             var response = await client.PostAsync("api/locations/Postlocation", content);
             return response;
         }
-        public async Task<HttpResponseMessage> GetUserTeam(string user)
+        public async Task<string> GetUserTeam(string user)
         {
 
             var response = await client.GetAsync("api/t_members/GetUserTeam?user=" + user);
-            return response;
+            string responseString = await response.Content.ReadAsStringAsync();
+            var jsn = JsonConvert.DeserializeObject<dynamic>(responseString);
+            if (response.IsSuccessStatusCode)
+
+            {
+                return (string)jsn["T_title"];
+            }
+            else
+            {
+
+                return null;
+            }
         }
-        public async Task<HttpResponseMessage> GetTeamMembers(string user)
+        public async Task<List<TeamMembers>> GetTeamMembers(string user)
         {
 
             var response = await client.GetAsync("api/user/GetMembers?user=" + (user));
-            return response;
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            var tmembers = JsonConvert.DeserializeObject<List<TeamMembers>>(responseBody);  
+
+            return tmembers;
         }
         public async Task<HttpResponseMessage> PostLocalLocation(string json)
         {

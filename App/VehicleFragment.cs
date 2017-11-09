@@ -43,13 +43,9 @@ namespace App
              {
 
              ClientRequests inst = new ClientRequests();
-             var response = await inst.GetVehicles();
-             string responseBody = await response.Content.ReadAsStringAsync();
-
-             var cars = new List<Vehicles>();
-
-             cars = JsonConvert.DeserializeObject<List<Vehicles>>(responseBody);
-             _adapter = new VehiclesAdapter(Activity, cars);
+             var vehicles = await inst.GetVehicles();
+             
+             _adapter = new VehiclesAdapter(Activity,vehicles);
              _listView.Adapter = _adapter;
              bar.Visibility = ViewStates.Gone;
              _listView.ItemClick += MListView_ItemClick;

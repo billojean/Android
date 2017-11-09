@@ -35,12 +35,7 @@ namespace App
         {
             try {
                 ClientRequests inst = new ClientRequests();
-                var response = await inst.GetLaptops();
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                var laptops = new List<Laptops>();
-
-                laptops = JsonConvert.DeserializeObject<List<Laptops>>(responseBody);
+                var laptops = await inst.GetLaptops();  
                 _adapter = new LaptopsAdapter(Activity, laptops);
                 _listView.Adapter = _adapter;
                 bar.Visibility = ViewStates.Gone;

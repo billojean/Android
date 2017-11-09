@@ -144,17 +144,15 @@ namespace App
                 try
                 {
                     ClientRequests inst = new ClientRequests();
-                    var response = await inst.GetUser(gmail);
-                    if (response.IsSuccessStatusCode)
+                    var user = await inst.GetUserByEmail(gmail);    
+                    if (user!=null)
 
                     {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        var jsn = JsonConvert.DeserializeObject<User>(responseBody);
-                        var reslt = db.InsertLoggedInUser(jsn); 
+                        var reslt = db.InsertLoggedInUser(user); 
                         var MenuActivity = new Intent(this, typeof(MenuActivity));
                         StartActivity(MenuActivity);
                         Toast.MakeText(this, "Logged in", ToastLength.Short).Show();
-                        Console.WriteLine($"{jsn.FirstName} {jsn.LastName}");
+                        Console.WriteLine($"{user.FirstName} {user.LastName}");
                     }
                     else
                     {

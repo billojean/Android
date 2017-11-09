@@ -165,24 +165,11 @@ namespace App
             try
             {
                  ClientRequests inst = new ClientRequests();
-                 var response = await inst.GetUserTeam(user.UserName);
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    var jsn = JsonConvert.DeserializeObject<dynamic>(responseString);
-                    if (response.IsSuccessStatusCode)
-                        
-                    {
-                        return (string)jsn["t_title"];
-                    }
-                    else
-                {
-                   
-                    return null;
-                }
-            
+                 var title = await inst.GetUserTeam(user.UserName);
+                 return title;
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine(ex.ToString());
                 return null;
             }

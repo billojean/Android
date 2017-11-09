@@ -135,14 +135,13 @@ namespace App
             {
 
                     ClientRequests inst = new ClientRequests();
-                    var response = await inst.GetMembersLocation(user);
-                    if (response.IsSuccessStatusCode)
+                    var locations = await inst.GetMembersLocation(user);    
+
+                    if (locations!=null)
 
                     {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        var jsn = JsonConvert.DeserializeObject<IEnumerable<Locations>>(responseBody);
 
-                        foreach (var key in jsn)
+                        foreach (var key in locations)
                         {
 
                             markerOpt1.SetPosition(new LatLng(key.latitude, key.longitude));
@@ -153,11 +152,6 @@ namespace App
 
 
                     }
-                    else {
-
-                        //no teammembers
-                    }               
-
             }
             catch (Exception ex)
             {

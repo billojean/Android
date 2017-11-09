@@ -46,15 +46,9 @@ namespace App
             try
             {
                 ClientRequests inst = new ClientRequests();
-                var response = await inst.GetTeamMembers(user);
+                var tmembers = await inst.GetTeamMembers(user); 
 
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                  
-                    List<TeamMembers> jsn = new List<TeamMembers>();
-
-                        jsn = JsonConvert.DeserializeObject<List<TeamMembers>>(responseBody);
-
-                        mteammembers = new TeamMembersAdapter(this, jsn);
+                        mteammembers = new TeamMembersAdapter(this, tmembers);
                         mListView.Adapter = mteammembers;
 
                 mListView.Visibility = ViewStates.Visible;

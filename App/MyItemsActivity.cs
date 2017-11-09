@@ -61,17 +61,10 @@ namespace App
             {
          
                     ClientRequests inst = new ClientRequests();
-                    var response = await inst.GetItems(user);
-
-                    string responseBody = await response.Content.ReadAsStringAsync();
-
-              
-                    List<Items> jsn = new List<Items>();
-
-                    jsn = JsonConvert.DeserializeObject<List<Items>>(responseBody);
+                    var items = await inst.GetItems(user);
                   
           
-                        mitems = new ItemsAdapter(this, jsn);
+                        mitems = new ItemsAdapter(this, items);
 
                         mListView.Adapter = mitems;
                         mListView.ItemClick += MListView_ItemClick;

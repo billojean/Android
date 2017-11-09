@@ -32,8 +32,7 @@ namespace App.Services
         IBinder binder;
         private string user;
         private bool ToggleIsChecked;
-        private string title;
-
+   
         public override void OnCreate()
         {
             base.OnCreate();
@@ -136,17 +135,8 @@ namespace App.Services
             {
                 try
                 {
-                        var response = await inst.GetUserTeam(user);
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        var jsn = JsonConvert.DeserializeObject<dynamic>(responseBody);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            title = (string)jsn["t_title"];
-                        }
-                        else
-                        {
-                            title = "";
-                        }
+                        var title = await inst.GetUserTeam(user);   
+
                          var db = new Database();
 
                          DateTime thisDay = DateTime.Now;

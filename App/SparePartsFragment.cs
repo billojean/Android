@@ -35,12 +35,8 @@ namespace App
         {
             try {
                 ClientRequests inst = new ClientRequests();
-                var response = await inst.GetSpareParts();
-                string responseBody = await response.Content.ReadAsStringAsync();
+                var spareparts = await inst.GetSpareParts();    
 
-                var spareparts = new List<SparePart>();
-
-                spareparts = JsonConvert.DeserializeObject<List<SparePart>>(responseBody);
                 _adapter = new SparePartsAdapter(Activity, spareparts);
                 bar.Visibility = ViewStates.Gone;
                 _listView.Adapter = _adapter;

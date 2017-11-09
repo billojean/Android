@@ -108,7 +108,7 @@ namespace App
                     
                         ClientRequests inst = new ClientRequests();
                         var response = await inst.GetTeam(pin.Text);
-                            string responseBody = await response.Content.ReadAsStringAsync();
+                        string responseBody = await response.Content.ReadAsStringAsync();
 
                         var jsn = JsonConvert.DeserializeObject<dynamic>(responseBody);
                        
