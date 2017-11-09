@@ -44,8 +44,8 @@ namespace App
             {
                 view = context.LayoutInflater.Inflate(Resource.Layout.teamrow, parent, false);
             }
-            view.FindViewById<TextView>(Resource.Id.Text1).Text = "Title:" + mteams[position].title;
-            view.FindViewById<TextView>(Resource.Id.Text2).Text = "Creator:" + mteams[position].creator;
+            view.FindViewById<TextView>(Resource.Id.Text1).Text = "Title:" + mteams[position].Title;
+            view.FindViewById<TextView>(Resource.Id.Text2).Text = "Creator:" + mteams[position].Creator;
 
 
             return view;

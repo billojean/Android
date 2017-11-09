@@ -3,9 +3,9 @@ namespace App
 {
     class Team
     {
-        public string title{ get; set; }
-        public string pin { get; set; }
-        public string creator { get; set; }
-
+        public string Title{ get; set; }
+        public string Pin { get; set; }
+        public string Creator { get; set; }
+        public bool Visibility { get; set; }
     }
 }

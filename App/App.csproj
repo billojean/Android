@@ -150,7 +150,7 @@
     <Compile Include="TakeItemActivity.cs" />
     <Compile Include="VehiclesAdapter.cs" />
     <Compile Include="TakeItemDialog.cs" />
-    <Compile Include="team.cs" />
+    <Compile Include="Team.cs" />
     <Compile Include="TeamAdapter.cs" />
     <Compile Include="TeamDialog.cs" />
     <Compile Include="teamMembers.cs" />

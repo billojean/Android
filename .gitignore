@@ -5,3 +5,5 @@
 /App/obj/Debug
 /.vs/App/v15/Server/sqlite3
 /.vs/App/v15
+/App/bin/Debug
+/App/obj/.cache

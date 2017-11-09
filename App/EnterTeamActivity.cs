@@ -55,15 +55,7 @@ namespace App
 
                 ClientRequests inst = new ClientRequests();
 
-                HttpResponseMessage response = await inst.GetTeams();
-
-                    string responseBody = await response.Content.ReadAsStringAsync();
-
-          
-                    List<Team> jsn = new List<Team>();
-
-          
-                        jsn = JsonConvert.DeserializeObject<List<Team>>(responseBody);
+                var jsn = await inst.GetTeams();    
 
                         mteam = new TeamAdapter(this, jsn);
                         mListView.Adapter = mteam;
@@ -119,9 +111,9 @@ namespace App
             var items = mteam[e.Position];
   
             Bundle mybundle = new Bundle();
-            mybundle.PutString("MyData1", items.pin);
+            mybundle.PutString("MyData1", items.Pin);
             mybundle.PutString("MyData2", user);
-            mybundle.PutString("MyData3", items.title);
+            mybundle.PutString("MyData3", items.Title);
          
                 FragmentTransaction transaction = FragmentManager.BeginTransaction();
                 TeamDialog teamDialog = new TeamDialog();

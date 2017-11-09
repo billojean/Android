@@ -4,12 +4,13 @@ using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace App
 {
-    class ClientRequests:IDisposable
+    class ClientRequests
     {
-        public const string Baseurl = "http://192.168.1.3:80/";
+        public const string Baseurl = "http://192.168.1.2:80/";
         static HttpClient client = new HttpClient();
 
         public ClientRequests()
@@ -28,34 +29,36 @@ namespace App
             var content = new FormUrlEncodedContent(values);
 
 
-            HttpResponseMessage response = await client.PostAsync("api/teams/Postteam", content);
+            var response = await client.PostAsync("api/teams/Postteam", content);
 
             return response;
 
         }
 
-        public async Task<HttpResponseMessage> GetTeams()
+        public async Task<List<Team>> GetTeams()
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/teams/Getteams");
-            return response;
+            var response = await client.GetAsync("api/teams/Getteams");
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var jsn = JsonConvert.DeserializeObject<List<Team>>(responseBody);
+            return jsn;
         }
         public async Task<HttpResponseMessage> GetVehicles()
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/Vehicles/Getvehicles");
+            var response = await client.GetAsync("api/Vehicles/Getvehicles");
             return response;
         }
         public async Task<HttpResponseMessage> GetLaptops()
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/Laptops/Getlaptops");
+            var response = await client.GetAsync("api/Laptops/Getlaptops");
             return response;
         }
         public async Task<HttpResponseMessage> GetSpareParts()
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/SpareParts/Getspareparts");
+            var response = await client.GetAsync("api/SpareParts/Getspareparts");
             return response;
         }
 
@@ -79,28 +82,28 @@ namespace App
         {
 
             var content = new FormUrlEncodedContent(values);
-            HttpResponseMessage response = await client.PostAsync("api/items/Postitem", content);
+            var response = await client.PostAsync("api/items/Postitem", content);
             return response;
         }
 
         public async Task<HttpResponseMessage> GetItems(string user)
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/items/Getitems?user=" + (user));
+            var response = await client.GetAsync("api/items/Getitems?user=" + (user));
             return response;
         }
 
         public async Task<HttpResponseMessage> ReturnItem(string id)
         {
 
-            HttpResponseMessage response = await client.DeleteAsync("api/items/Returnitem?id=" + id);
+            var response = await client.DeleteAsync("api/items/Returnitem?id=" + id);
             return response;
         }
 
         public async Task<HttpResponseMessage> GetUser(string email)
         {
  
-            HttpResponseMessage response = await client.GetAsync("api/user/Getuser?Email=" + (email));
+            var response = await client.GetAsync("api/user/Getuser?Email=" + (email));
             return response;
         }
 
@@ -108,7 +111,7 @@ namespace App
         {
 
             var content = new FormUrlEncodedContent(values);
-            HttpResponseMessage response = await client.PostAsync("api/user/Login", content);
+            var response = await client.PostAsync("api/user/Login", content);
             return response;
         }
 
@@ -123,55 +126,42 @@ namespace App
         {
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync("api/locations/Postlocation", content);
+            var response = await client.PostAsync("api/locations/Postlocation", content);
             return response;
         }
         public async Task<HttpResponseMessage> GetUserTeam(string user)
         {
- 
-            HttpResponseMessage response = await client.GetAsync("api/t_members/GetUserTeam?user=" + user);
+
+            var response = await client.GetAsync("api/t_members/GetUserTeam?user=" + user);
             return response;
         }
         public async Task<HttpResponseMessage> GetTeamMembers(string user)
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/user/GetMembers?user=" + (user));
+            var response = await client.GetAsync("api/user/GetMembers?user=" + (user));
             return response;
         }
         public async Task<HttpResponseMessage> PostLocalLocation(string json)
         {
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync("api/location_history/PostLocalLocation", content);
+            var response = await client.PostAsync("api/location_history/PostLocalLocation", content);
             return response;
         }
 
         public async Task<HttpResponseMessage> DeleteUserFromTeam(string user)
         {
 
-            HttpResponseMessage response = await client.DeleteAsync("api/teams/DeleteFromTeam?user=" + user);
+            var response = await client.DeleteAsync("api/teams/DeleteFromTeam?user=" + user);
             return response;
         }
         public async Task<HttpResponseMessage> HasItems(string user)
         {
 
-            HttpResponseMessage response = await client.GetAsync("api/items/Hasitems?user=" + user);
+            var response = await client.GetAsync("api/items/Hasitems?user=" + user);
             return response;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (client != null) client.Dispose();
-            }
-        }
     }
 }
  
