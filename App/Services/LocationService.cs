@@ -112,12 +112,12 @@ namespace App.Services
                
                     try
                     {
-                    JObject data = new JObject
-                    {
-                        ["username"] = user,
-                        ["latitude"] = location.Latitude,
-                        ["longitude"] = location.Longitude
-                    };
+                        JObject data = new JObject
+                        {
+                            ["username"] = user,
+                            ["latitude"] = location.Latitude,
+                            ["longitude"] = location.Longitude
+                        };
 
                     string json = JsonConvert.SerializeObject(data);
                            

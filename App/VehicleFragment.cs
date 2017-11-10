@@ -24,13 +24,8 @@ namespace App
         {
 
             base.OnCreate(savedInstanceState);
-            try {
                 await GetVehicles();
-            }
-            catch(Java.Lang.NullPointerException ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+
             SetHasOptionsMenu(true);
 
             // Create your fragment here

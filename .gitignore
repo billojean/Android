@@ -7,3 +7,6 @@
 /.vs/App/v15
 /App/bin/Debug
 /App/obj/.cache
+/.vs
+/App/obj/Release
+/Components

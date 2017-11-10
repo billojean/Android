@@ -14,12 +14,12 @@ namespace App
         {
             try
             {
-                var connection = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
+                //var connection = new SQLiteConnection(System.IO.Path.Combine(docsFolder, "db_sqlnet.db"));
                 //connection.DropTable<Items>();
                 //connection.DropTable<LocationLocal>();
-                connection.CreateTable<User>();
-                connection.CreateTable<Items>();
-                connection.CreateTable<LocationLocal>();
+                db.CreateTable<User>();
+                db.CreateTable<Items>();
+                db.CreateTable<LocationLocal>();
                 return "Database created";
             }
             catch (SQLiteException ex)
