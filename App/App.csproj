@@ -111,8 +111,6 @@
   <ItemGroup>
     <Compile Include="App1.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="SignInResultCallback.cs" />
-    <Compile Include="SignOutResultCallback.cs" />
     <Compile Include="VehicleFragment.cs" />
     <Compile Include="ClientRequests.cs" />
     <Compile Include="InfoAdapter.cs" />

@@ -63,8 +63,8 @@ namespace App
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .AddApi(Auth.GOOGLE_SIGN_IN_API)
                     .Build();
-            
-           butt9.Checked = true;
+
+            butt9.Checked = true;
 
             mDrawerToggle = new MyActionBarDrawerToggle(
                  this,
@@ -342,7 +342,7 @@ namespace App
             new Android.App.AlertDialog.Builder(this)
             .SetPositiveButton("Yes",  (sender1, args) =>
             {
-                Auth.GoogleSignInApi.SignOut(mGoogleApiClient).SetResultCallback(new SignOutResultCallback { Activity = this });
+                Auth.GoogleSignInApi.SignOut(mGoogleApiClient);//.SetResultCallback(new SignOutResultCallback { Activity = this });
                 var db = new Database();
                 string result = db.DeleteUser(user.UserName);
                 var LogOut = new Intent(this, typeof(MainActivity));
@@ -388,7 +388,9 @@ namespace App
             { base.OnBackPressed(); }
 
             else {
-                StartLogOut(null, null);
+                Intent intent = new Intent(Intent.ActionMain);
+                intent.AddCategory(Intent.CategoryHome);
+                StartActivity(intent);
             }
         }
 

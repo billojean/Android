@@ -68,45 +68,35 @@ namespace App
             };
 
 
-            IsLoggedInByUser();
+            
             signInButton.Click += LoginByGoogle;
 
         }
 
-        private void IsLoggedInByUser()
+        private bool IsLoggedIn()   
         {
             var db = new Database();
             var user = db.GetLoggedInUser();
 
             if (user != null)
             {
-                bar.Visibility = ViewStates.Visible;
-                var MenuActivity = new Intent(this, typeof(MenuActivity));
-                StartActivity(MenuActivity);
-                Toast.MakeText(this, "Logged in", ToastLength.Short).Show();
-            }
-        }
-
-        protected async override void OnStart()
-        {
-            base.OnStart();
-            
-            var opr = Auth.GoogleSignInApi.SilentSignIn(mGoogleApiClient);
-            if (opr.IsDone)
-            {
-                // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-                // and the GoogleSignInResult will be available instantly.
-                Log.Debug(TAG, "Got cached sign-in");
-                var result = opr.Get() as GoogleSignInResult;
-                await HandleSignInResult(result);
+                return true;
             }
             else
             {
-                // If the user has not previously signed in on this device or the sign-in has expired,
-                // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-                // single sign-on will occur in this branch.
-                
-                opr.SetResultCallback(new SignInResultCallback { Activity = this });
+                return false;
+            }
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            if(IsLoggedIn())
+            {
+                bar.Visibility = ViewStates.Visible;
+                var MenuActivity = new Intent(this, typeof(MenuActivity));
+                StartActivity(MenuActivity);
             }
         }
 
@@ -137,7 +127,7 @@ namespace App
             if (result.IsSuccess)
             {
                 bar.Visibility = ViewStates.Visible;
-                // Signed in successfully, show authenticated UI.
+
                 var acct = result.SignInAccount;
                 gmail = acct.Email;
 
@@ -173,8 +163,6 @@ namespace App
             else
             {
                 bar.Visibility = ViewStates.Invisible;
-                //Toast.MakeText(this, "Couldn't Establish Connection to Server", ToastLength.Short).Show();
-                // Signed out, show unauthenticated UI.
 
             }
         }
@@ -185,7 +173,7 @@ namespace App
                 StartActivityForResult(signInIntent, RC_SIGN_IN);
             
 
-                }
+        }
 
        
 
