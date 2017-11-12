@@ -342,7 +342,7 @@ namespace App
             new Android.App.AlertDialog.Builder(this)
             .SetPositiveButton("Yes",  (sender1, args) =>
             {
-                Auth.GoogleSignInApi.SignOut(mGoogleApiClient);//.SetResultCallback(new SignOutResultCallback { Activity = this });
+                Auth.GoogleSignInApi.SignOut(mGoogleApiClient);
                 var db = new Database();
                 string result = db.DeleteUser(user.UserName);
                 var LogOut = new Intent(this, typeof(MainActivity));
