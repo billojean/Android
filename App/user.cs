@@ -1,3 +1,4 @@
+using System;
 using SQLite;
 
 namespace App
@@ -14,6 +15,26 @@ namespace App
         public string OfficePhone { get; set; }
         public string MobilePhone { get; set; }
         public byte[] Pic { get; set; }
+        public bool IsLoggedIn
+        {
+            get { return HasLoggedIn(); }    
 
+       
+    }
+
+        public bool HasLoggedIn()   
+        {
+            var db = new Database();
+            var user = db.GetLoggedInUser();
+
+            if (user != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

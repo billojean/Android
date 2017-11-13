@@ -73,26 +73,13 @@ namespace App
 
         }
 
-        private bool IsLoggedIn()   
-        {
-            var db = new Database();
-            var user = db.GetLoggedInUser();
-
-            if (user != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         protected override void OnStart()
         {
             base.OnStart();
 
-            if(IsLoggedIn())
+            var user = new User();
+
+            if(user.IsLoggedIn)
             {
                 bar.Visibility = ViewStates.Visible;
                 var MenuActivity = new Intent(this, typeof(MenuActivity));

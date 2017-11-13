@@ -152,7 +152,7 @@
     <Compile Include="TeamDialog.cs" />
     <Compile Include="teamMembers.cs" />
     <Compile Include="TeamMembersAdapter.cs" />
-    <Compile Include="users.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="Vehicles.cs" />
   </ItemGroup>
   <ItemGroup>
