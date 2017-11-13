@@ -65,9 +65,6 @@ namespace App
                     
 
                             var MenuActivity = new Intent(Activity, typeof(MenuActivity));
-                            //MenuActivity.PutExtra("MyData", jsn.UserName);
-                            //MenuActivity.PutExtra("MyData2", true);
-                            //MenuActivity.PutExtra("MyData3", jsn.FirstName + " " + jsn.LastName);
                             StartActivity(MenuActivity);
                             Toast.MakeText(Activity, "Logged in", ToastLength.Short).Show();
                         }
